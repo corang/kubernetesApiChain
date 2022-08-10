@@ -65,6 +65,7 @@ func main() {
     errCheck(err)
 
     fmt.Printf("%d pods were found\n", len(pods.Items))
+    var readyPods int
 
     for _, pod := range pods.Items {
       totalContainers := len(pod.Spec.Containers)
@@ -77,7 +78,16 @@ func main() {
         }
       }
 
+      if readyContainers == totalContainers {
+        readyPods++
+      }
+
       fmt.Printf("Pod %s container status: %d/%d ready\n", pod.Name, readyContainers, totalContainers)
+    }
+
+    if readyPods == len(pods.Items) {
+      ready = true;
+      continue
     }
 
     time.Sleep(5 * time.Second)
